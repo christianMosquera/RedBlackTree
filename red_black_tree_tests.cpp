@@ -5,6 +5,21 @@
 using std::cout;
 using std::endl;
 
+/*****************************************************
+ **
+ ** File:    red_black_tree_tests.cpp
+ ** Project: CSCE 221 Lab 4 Spring 2022
+ ** Author:  Christian Mosquera
+ ** Date:    03/30/22
+ ** Section: 510
+ ** Email:   cwbo.1701@tamu.edu
+ ** 
+ ** This file contains function calls to the red black
+ ** tree data structure to test all the functions associated 
+ ** with it.
+ **
+ *****************************************************/
+
 int main() {
     // example test case given in lab assignment
     // make an empty tree
