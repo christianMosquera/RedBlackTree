@@ -66,5 +66,61 @@ int main() {
     std::endl;
     }
 
+
+
+
+    // Test 2: test insert negatives and positives
+    // and test printing the tree
+
+    cout << "TESTING REDBLACKTREE 3" << endl;
+    RedBlackTree<int> tree2;
+    cout << "Inserting elements into tree2:" << endl;
+    // inserting
+    tree2.insert(1);
+    tree2.insert(5);
+    tree2.insert(-1);
+    tree2.insert(-5);
+    tree2.insert(0);
+    tree2.insert(20);
+
+    // printing   
+    tree2.print_tree();
+    cout << endl;
+
+
+
+
+    // Test 3: test copy constructor and copy assignment
+
+    cout << "TEST REDBLACKTREE 3" << endl;
+
+    // construct tree3
+    RedBlackTree<int> tree3(tree2);
+    tree3.insert(100);
+
+    // construct tree4
+    RedBlackTree<int> tree4;
+    tree4.insert(1);
+    tree4 = tree4;
+    tree4 = tree3;
+    tree4.insert(50);
+
+    cout << "Print tree3:" << endl;
+    tree3.print_tree();
+    cout << endl;
+
+    cout << "Print tree4:" << endl;
+    tree4.print_tree();
+    cout << endl;
+
+    // Test 4: print empty tree
+
+    cout << "TEST REDBLACKTREE 4" << endl;
+    RedBlackTree<int> tree5;
+    tree5.print_tree();
+
+
+    // Test 5: 
+
     return 0;
 }

@@ -5,23 +5,6 @@
 #include <utility>
 #include <iostream>
 
-
-/*****************************************************
- **
- ** File:    red_black_tree.h
- ** Project: CSCE 221 Lab 5 Spring 2022
- ** Author:  Christian Mosquera
- ** Date:    03/30/22
- ** Section: 510
- ** Email:   cwbo.1701@tamu.edu
- ** 
- ** This file contains all the functions for the 
- ** red black tree data structure. It has public 
- ** functions that a user can call and it utilizes
- ** internal private functions to help with recursion.
- **
- *****************************************************/
-
 template <typename Comparable>
 class RedBlackTree {
 
@@ -41,12 +24,6 @@ private:
     Node* root;
 
     // recursive functions
-
-    //---------------------------------------
-    // Name: recurse_find_min
-    // PreCondition:  Binary tree exists
-    // PostCondition: Returns the minimum value
-    //---------------------------------------
     Node* recurse_find_min(Node* node) const { 
         if (!node) {
             throw std::invalid_argument("Tree is empty, no minimum value.");
@@ -58,13 +35,6 @@ private:
 
         return recurse_find_min(node->left);
     }
-
-
-    //---------------------------------------
-    // Name: recurse_find_max
-    // PreCondition:  Binary tree exists
-    // PostCondition: Returns maximum value
-    //---------------------------------------
     Node* recurse_find_max(Node* node) const { 
         if (!node) {
             throw std::invalid_argument("Tree is empty, no maximun value.");
@@ -76,7 +46,6 @@ private:
 
         return recurse_find_max(node->right);
     }
-
     void printRecurse(Node* node, int count, std::ostream& os) const;
     void recurseInsert(const Comparable& value, Node* &node, Node* &parent);
     void balance(Node* &node);
@@ -116,9 +85,7 @@ public:
 
 
 
-//---------------------------------------
-// Name: Defalut Constructor
-//---------------------------------------
+
 template<typename Comparable>
 RedBlackTree<Comparable>::RedBlackTree() : root(nullptr) {}
 
@@ -139,12 +106,15 @@ RedBlackTree<Comparable>::RedBlackTree(const RedBlackTree& other) : root(nullptr
 }
 
 
-//---------------------------------------
-// Name: Destructor
-//---------------------------------------
 template<typename Comparable>
 RedBlackTree<Comparable>::~RedBlackTree() {
     make_empty();
+}
+
+template<typename Comparable>
+void RedBlackTree<Comparable>::insert(const Comparable& value) {
+    
+    recurseInsert(value, root, root);
 }
 
 
@@ -177,23 +147,6 @@ RedBlackTree<Comparable>& RedBlackTree<Comparable>::operator=(const RedBlackTree
 }
 
 
-//---------------------------------------
-// Name: insert
-// PreCondition:  Value is comparable
-// PostCondition: Node inserted into the binary tree
-//---------------------------------------
-template<typename Comparable>
-void RedBlackTree<Comparable>::insert(const Comparable& value) {
-    
-    recurseInsert(value, root, root);
-}
-
-
-//---------------------------------------
-// Name: insertRecurse
-// PreCondition:  Value is comparable
-// PostCondition: Node inserted into the binary tree
-//---------------------------------------
 template<typename Comparable>
 void RedBlackTree<Comparable>::recurseInsert(const Comparable& value, Node* &node, Node* &parent) {
 
@@ -214,11 +167,6 @@ void RedBlackTree<Comparable>::recurseInsert(const Comparable& value, Node* &nod
 }
 
 
-//---------------------------------------
-// Name: balance
-// PreCondition:  node is not nullptr
-// PostCondition: Balances the tree accordingly
-//---------------------------------------
 template <typename Comparable>
 void RedBlackTree<Comparable>::balance(Node* &node) {
 
@@ -349,20 +297,16 @@ void RedBlackTree<Comparable>::balance(Node* &node) {
 
         
     }
-    
+    // check if parent is red and sibling is red
 }
 
 
-//---------------------------------------
-// Name: singleRotateRight
-// PreCondition:  node is not nullptr
-// PostCondition: Rotates the tree right
-//---------------------------------------
 template <typename Comparable>
 void RedBlackTree<Comparable>::singleRotateRight(Node* node) {
 
     // varibles to keep track of
     Node* nodeLeft = node->left;
+    Node* nodeParent = node->parent;
 
     // change the node left to the nodeLeft's right
     node->left = nodeLeft->right;
@@ -374,10 +318,7 @@ void RedBlackTree<Comparable>::singleRotateRight(Node* node) {
 
     // update nodeLeft's parent to be node's parent
     nodeLeft->parent = node->parent;
-
-    // the right of nodeLeft is the node
-    nodeLeft->right = node;
-
+    
     // change the root if the node's parent is nullptr
     if (nodeParent == nullptr) {
         this->root = nodeLeft;
@@ -393,6 +334,9 @@ void RedBlackTree<Comparable>::singleRotateRight(Node* node) {
         node->parent->left = nodeLeft;
     }
 
+    // the right of nodeLeft is the node
+    nodeLeft->right = node;
+
     // change node's parent to be nodeLeft
     node->parent = nodeLeft;
 
@@ -403,50 +347,33 @@ void RedBlackTree<Comparable>::singleRotateRight(Node* node) {
 }
 
 
-//---------------------------------------
-// Name: singleRotateLeft
-// PreCondition:  node is not nullptr
-// PostCondition: Rotates the tree left
-//---------------------------------------
 template <typename Comparable>
 void RedBlackTree<Comparable>::singleRotateLeft(Node* node) {
-
+    
     // varibles to keep track of
     Node* nodeRight = node->right;
 
-    // change the node right to the nodeRight's left
     node->right = nodeRight->left;
-
-    // update parent if there exists a subtree
     if (nodeRight->left) {
         nodeRight->left->parent = node;
     }
 
-    // update nodeRight's parent to be node's parent
     nodeRight->parent = node->parent;
 
-    // the left of nodeRight is the node
     nodeRight->left = node;
 
-    // change the root if the node's parent is nullptr
     if (node->parent == nullptr) {
         this->root = nodeRight;
     }
-
-    // change the node parent's right if node is on the right
     else if (node->parent->right == node) {
         node->parent->right = nodeRight;
     }
-
-    // change the node parent's left if the node is on the left
     else {
         node->parent->left = nodeRight;
     }
 
-    // change node's parent to be nodeLeft
     node->parent = nodeRight;
 
-    // change colors
     nodeRight->color = BLACK;
     nodeRight->left->color = RED;
 } 
@@ -474,87 +401,87 @@ void RedBlackTree<Comparable>::remove(const Comparable& value) {
 //---------------------------------------
 template <typename Comparable>
 void RedBlackTree<Comparable>::removeRecurse(const Comparable& value, Node* &current) {
-    Node* sibling;
-    int colorDelete = BLACK;
+    // Node* sibling;
+    // int colorDelete = BLACK;
 
     // find value
     if (!current) {
         return;
     }
 
-    if (value == current->value) {
-        if (current) {
-            colorDelete = current->color;
-        }
-        // case 1: leaf node
-        if (current->left == nullptr && current->right == nullptr) {
-            // if (current->color == BLACK) {
-            //     if (current == current->parent->left) {
-            //         sibling = current->parent->right;
-            //     }
-            //     else {
-            //         sibling = current->parent->left;
-            //     }
-            //     fixBlack(current, sibling);
-            // }
-            delete current;
-            current = nullptr;
-            return;
-        }
+    // if (value == current->value) {
+    //     if (current) {
+    //         colorDelete = current->color;
+    //     }
+    //     // case 1: leaf node
+    //     if (current->left == nullptr && current->right == nullptr) {
+    //         if (current->color == BLACK) {
+    //             if (current == current->parent->left) {
+    //                 sibling = current->parent->right;
+    //             }
+    //             else {
+    //                 sibling = current->parent->left;
+    //             }
+    //             fixBlack(current, sibling);
+    //         }
+    //         delete current;
+    //         current = nullptr;
+    //         return;
+    //     }
 
-        // case 2: right sub tree and left sub tree
-        else if (current->left && current->right) {
+    //     // case 2: right sub tree and left sub tree
+    //     else if (current->left && current->right) {
 
-            // Find max in left sub tree
-            Node* minRight = recurse_find_min(current->right);
-            current->value = minRight->value;
-            removeRecurse(minRight->value, current->right);
+    //         // Find max in left sub tree
+    //         Node* minRight = recurse_find_min(current->right);
+    //         current->value = minRight->value;
+    //         removeRecurse(minRight->value, current->right);
             
-        }
+    //     }
 
-        // case 3: right sub tree or left sub tree
-        else if (current->right || current->left) {
+    //     // case 3: right sub tree or left sub tree
+    //     else if (current->right || current->left) {
 
-            Node* temp = current;
-            if (current->right) {
-                current = current->right;
-                delete temp;
-                // if (current->color == BLACK && current->right->color == BLACK) {
-                //     fixBlack(current, current->right);
-                // }
-                // else {
-                //     if (current->right){
-                //         current->right->color = BLACK;
-                //     }
+    //         Node* temp = current;
+    //         if (current->right) {
+    //             current = current->right;
+    //             delete temp;
+    //             // if (current->color == BLACK && current->right->color == BLACK) {
+    //             //     fixBlack(current, current->right);
+    //             // }
+    //             // else {
+    //             //     if (current->right){
+    //             //         current->right->color = BLACK;
+    //             //     }
                     
-                // }
+    //             // }
                 
-            }
-            else {
-                current = current->left;
-                delete temp;
-                // if (current->color == BLACK && current->left->color == BLACK) {
-                //     fixBlack(current, current->left);
-                // }
-                // else {
-                //     if (current->left) {
-                //         current->left->color = BLACK;
-                //     }
+    //         }
+    //         else {
+    //             current = current->left;
+    //             delete temp;
+    //             // if (current->color == BLACK && current->left->color == BLACK) {
+    //             //     fixBlack(current, current->left);
+    //             // }
+    //             // else {
+    //             //     if (current->left) {
+    //             //         current->left->color = BLACK;
+    //             //     }
                     
-                // }
+    //             // }
 
                 
-            }
-        }
-    }
+    //         }
+    //     }
+    // }
 
-    else if (value < current->value) {
-        removeRecurse(value, current->left);
-    }
+    // else if (value < current->value) {
+    //     removeRecurse(value, current->left);
+    // }
 
-    else {
-        removeRecurse(value, current->right);
-    }
+    // else {
+    //     removeRecurse(value, current->right);
+    // }
     
     // At the end of inserting, make sure tree balanced
     // if (blackBlack) {
@@ -570,11 +497,6 @@ void RedBlackTree<Comparable>::removeRecurse(const Comparable& value, Node* &cur
 }
 
 
-//---------------------------------------
-// Name: fixBlack
-// PreCondition:  node is not nullptr
-// PostCondition: Fixes red black property
-//---------------------------------------
 template <typename Comparable>
 void RedBlackTree<Comparable>::fixBlack(Node* node, Node* sibling) {
 
@@ -596,16 +518,6 @@ void RedBlackTree<Comparable>::fixBlack(Node* node, Node* sibling) {
     }
     if (siblingLeft) {
         colorLeft = siblingLeft->color;
-    }
-
-    if (!sibling) {
-        if (node->parent = node->parent->parent->left) {
-            fixBlack(node->parent, node->parent->parent->right);
-        }
-        else {
-            fixBlack(node->parent, node->parent->parent->left);
-        }
-        
     }
     
 
@@ -631,16 +543,8 @@ void RedBlackTree<Comparable>::fixBlack(Node* node, Node* sibling) {
         if (sibling) {
             sibling->color = RED;
         }
-        if (node->parent->color == BLACK) {
-            if (node->parent = node->parent->parent->left) {
-                fixBlack(node->parent, node->parent->parent->right);
-            }
-            else {
-                fixBlack(node->parent, node->parent->parent->left);
-            }
-        }
-        else {
-            node->parent->color = BLACK;
+        if (node->color == RED) {
+            node->color = BLACK;
         }
         
     }
@@ -650,6 +554,10 @@ void RedBlackTree<Comparable>::fixBlack(Node* node, Node* sibling) {
     }
 
 }
+
+
+
+
 
 
 //---------------------------------------
@@ -667,6 +575,27 @@ const Comparable& RedBlackTree<Comparable>::find_min() const {
 
 
 //---------------------------------------
+// Name: recurse_find_min
+// PreCondition:  Binary tree exists
+// PostCondition: Returns the minimum value
+//---------------------------------------
+// template <typename Comparable>
+// Comparable& RedBlackTree<Comparable>::recurse_find_min(Node* node) const {
+
+//     if (!node) {
+//         throw std::invalid_argument("Tree is empty, no minimum value.");
+//     }
+
+//     else if (node->left == nullptr) {
+//         return node->value;
+//     }
+
+//     return recurse_find_min(node->left);
+
+// }
+
+
+//---------------------------------------
 // Name: find_max
 // PreCondition:  Binary tree exists
 // PostCondition: Returns maximum value
@@ -678,6 +607,27 @@ const Comparable& RedBlackTree<Comparable>::find_max() const {
     return node->value;
 
 }
+
+
+//---------------------------------------
+// Name: recurse_find_max
+// PreCondition:  Binary tree exists
+// PostCondition: Returns maximum value
+//---------------------------------------
+// template <typename Comparable>
+// Comparable& RedBlackTree<Comparable>::recurse_find_max(Node* node) const {
+    
+//     if (!node) {
+//         throw std::invalid_argument("Tree is empty, no maximun value.");
+//     }
+
+//     else if (node->right == nullptr) {
+//         return node->value;
+//     }
+
+//     return recurse_find_max(node->right);
+
+// }
 
 
 //---------------------------------------
@@ -782,6 +732,7 @@ bool RedBlackTree<Comparable>::contains(const Comparable& value) const {
 }
 
 
+
 //---------------------------------------
 // Name: containRecurse
 // PreCondition:  Node is not nullptr and value is comparable
@@ -816,6 +767,7 @@ bool RedBlackTree<Comparable>::containRecurse(Node* node, const Comparable& valu
 }
 
 
+
 //---------------------------------------
 // Name: make_empty
 // PreCondition:  Tree exists
@@ -827,7 +779,6 @@ void RedBlackTree<Comparable>::make_empty() {
     emptyRecurse(root);
 
 }
-
 
 //---------------------------------------
 // Name: emptyRecurse
