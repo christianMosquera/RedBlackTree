@@ -575,58 +575,58 @@ void RedBlackTree<Comparable>::removeRecurse(const Comparable& value, Node* &cur
 template <typename Comparable>
 void RedBlackTree<Comparable>::fixBlack(Node* node, Node* sibling) {
 
-    if (node == root) {
-        return;
-    }
+    // if (node == root) {
+    //     return;
+    // }
 
-    Node* siblingRight = sibling->right;
-    Node* siblingLeft = sibling->left;
-    int colorRight = BLACK;
-    int colorLeft = BLACK;
-    int siblingColor = BLACK;
+    // Node* siblingRight = sibling->right;
+    // Node* siblingLeft = sibling->left;
+    // int colorRight = BLACK;
+    // int colorLeft = BLACK;
+    // int siblingColor = BLACK;
 
-    if (sibling) {
-        siblingColor = sibling->color;
-    }
-    if (siblingRight) {
-        colorRight = siblingRight->color;
-    }
-    if (siblingLeft) {
-        colorLeft = siblingLeft->color;
-    }
+    // if (sibling) {
+    //     siblingColor = sibling->color;
+    // }
+    // if (siblingRight) {
+    //     colorRight = siblingRight->color;
+    // }
+    // if (siblingLeft) {
+    //     colorLeft = siblingLeft->color;
+    // }
     
 
-    if (siblingColor == BLACK && (colorLeft == RED || colorRight == RED)) {
+    // if (siblingColor == BLACK && (colorLeft == RED || colorRight == RED)) {
 
-        if (sibling == node->left && (colorLeft == RED || colorRight == RED)) {
-            singleRotateRight(node);
-        }
-        else if (sibling == node->left && (colorRight == RED && colorLeft == BLACK)) {
-            singleRotateLeft(sibling);
-            singleRotateRight(node);
-        }
-        else if (sibling == node->right && (colorRight == RED || colorLeft == BLACK)) {
-            singleRotateLeft(node);
-        }
-        else if (sibling == node->right && (colorLeft == RED && colorRight == BLACK)) {
-            singleRotateRight(sibling);
-            singleRotateLeft(node);
-        }
-    }
+    //     if (sibling == node->left && (colorLeft == RED || colorRight == RED)) {
+    //         singleRotateRight(node);
+    //     }
+    //     else if (sibling == node->left && (colorRight == RED && colorLeft == BLACK)) {
+    //         singleRotateLeft(sibling);
+    //         singleRotateRight(node);
+    //     }
+    //     else if (sibling == node->right && (colorRight == RED || colorLeft == BLACK)) {
+    //         singleRotateLeft(node);
+    //     }
+    //     else if (sibling == node->right && (colorLeft == RED && colorRight == BLACK)) {
+    //         singleRotateRight(sibling);
+    //         singleRotateLeft(node);
+    //     }
+    // }
 
-    else if (siblingColor == BLACK && (colorLeft == BLACK && colorRight == BLACK)) {
-        if (sibling) {
-            sibling->color = RED;
-        }
-        if (node->color == RED) {
-            node->color = BLACK;
-        }
+    // else if (siblingColor == BLACK && (colorLeft == BLACK && colorRight == BLACK)) {
+    //     if (sibling) {
+    //         sibling->color = RED;
+    //     }
+    //     if (node->color == RED) {
+    //         node->color = BLACK;
+    //     }
         
-    }
+    // }
 
-    else if (siblingColor == RED) {
+    // else if (siblingColor == RED) {
 
-    }
+    // }
 
 }
 
